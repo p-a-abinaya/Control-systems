@@ -17,14 +17,20 @@ V = 10;     %Flight Velocity
 Mach = V/a; % flight mach number 
 
 
-Alpha = linspace(-5,15,10);  % Alphas
-Elev = linspace(-10,10,10);  % Elevator
+Alpha = linspace(-5,15,11);  % Alphas
+Elev = linspace(-10,10,6);  % Elevator
 
 it = 0; % Number of Iterations
 
 imax = numel(Elev);
 jmax = numel(Alpha);
 runtotal = imax*jmax;
+
+
+CX = zeros(jmax,imax); CY = zeros(jmax,imax); CZ = zeros(jmax,imax); 
+Cl = zeros(jmax,imax); Cm = zeros(jmax,imax); Cn = zeros(jmax,imax); 
+CL = zeros(jmax,imax); CD = zeros(jmax,imax);
+
 
 for i = 1:imax %for each elevator condition
     for j = 1:jmax %for each alpha         
@@ -71,11 +77,11 @@ for i = 1:imax %for each elevator condition
        fprintf(fid, '%s\n', 'x');
        
        %save the files 
-        file_save.st = ['Stab_Der_e' num2str(Elev(i)) 'a_' num2str(Alpha(j)) '.txt'];
-        file_save.sb = ['Body_axis_e' num2str(Elev(i)) 'a_' num2str(Alpha(j)) '.txt'];
-        file_save.ft = ['Tot_Force_e' num2str(Elev(i)) 'a_' num2str(Alpha(j)) '.txt'];
-        file_save.fb = ['Body_Force_e' num2str(Elev(i)) 'a_' num2str(Alpha(j)) '.txt'];
-        file_save.hm = ['Hinge_Mom_e' num2str(Elev(i)) 'a_' num2str(Alpha(j)) '.txt'];
+       file_save.st = ['Stab_Der_e' num2str(Elev(i)) '_a' num2str(Alpha(j)) '.txt'];
+       file_save.sb = ['Body_axis_e' num2str(Elev(i)) '_a' num2str(Alpha(j)) '.txt'];
+       file_save.ft = ['Tot_Force_e' num2str(Elev(i)) '_a' num2str(Alpha(j)) '.txt'];
+       file_save.fb = ['Body_Force_e' num2str(Elev(i)) '_a' num2str(Alpha(j)) '.txt'];
+       file_save.hm = ['Hinge_Mom_e' num2str(Elev(i)) '_a' num2str(Alpha(j)) '.txt'];
         
         
        fprintf(fid, '%s\n', 'st');   % Save the st data
@@ -94,6 +100,25 @@ for i = 1:imax %for each elevator condition
        disp(['Iteration ...' num2str(it) '/' num2str(runtotal)]);
        it = it + 1;
        
+       fid = fopen(file_save.st, 'r');
+       x = textscan(fid, '%s');
+       for r = 70:80
+           
+           if strcmp(x{1,1}{r,1}, 'CXtot') == 1
+               CX(j,i) = str2double(x{1,1}{r+2,1});
+               CY(j,i) = str2double(x{1,1}{r+2+9,1});
+               CZ(j,i) = str2double(x{1,1}{r+2+15,1});
+               
+               Cl(j,i) = str2double(x{1,1}{r+2+3,1});            
+               Cm(j,i) = str2double(x{1,1}{r+2+12,1});
+               Cn(j,i) = str2double(x{1,1}{r+2+18,1});
+               
+               CL(j,i) = str2double(x{1,1}{r+2+24,1});
+               CD(j,i) = str2double(x{1,1}{r+2+27,1});
+               
+           end
+       end
+       fclose(fid);
     end
 end
 disp('Finished run');
