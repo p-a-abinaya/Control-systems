@@ -1,18 +1,14 @@
 %% This Script runs AVL and produces files for each flight condition
 % The script runs AVL for @ number of different Alphas, Setas and CS
-
- 
-
 clear; clc;
 
 
-% Specify AVE Filenames
+% Specify AVL Filenames
 files.geo = 'b737.avl';
 files.run = 'b737.run';
 files.mass = 'b737.mass';
 
  
-
 CGrangeX = linspace(1.35,1.42,2);
 CGrange = [CGrangeX; zeros(1,numel (CGrangeX)); 0.034*ones(1,numel (CGrangeX))]';
 MassMatrix = linspace(71.994,80,2);
@@ -35,6 +31,7 @@ Elev = linspace(-10,10,1);  % Elevator
 Rudd = linspace(-5,5,1);    % Rudder
 it = 0; % Number of Iterations
 
+imax = numel(CGrangeX);
 jmax = numel(Alpha);
 kmax = numel(Beta);
 
@@ -44,16 +41,34 @@ for i = 1:imax      % For each CG
     for j = 1:jmax    % For each Alpha
         for k=1:kmax   % For each Beta
 
-        filenames.sb = ['SB_AVL_xcg_' num2str(CGrange(i)) '_a' num2str(Alpha(j)) '_b' num2str(Beta(k)) '.csv'];
-        filenames.st = ['ST_AVL_xcg_' num2str(CGrange(i)) '_a' num2str(Alpha(j)) '_b' num2str(Beta(k)) '.csv'];
+        filenames.sb = ['SB_AVL_xcg_' num2str(CGrange(i)) '_a' num2str(Alpha(j)) '_b' num2str(Beta(k)) '.txt'];
+        filenames.st = ['ST_AVL_xcg_' num2str(CGrange(i)) '_a' num2str(Alpha(j)) '_b' num2str(Beta(k)) '.txt'];
         filenames.ft = ['AVL_xcg_' num2str(CGrange(i)) '_a' num2str(Alpha(j)) '_b' num2str(Beta(k)) '.ft'];
         filenames.fn = ['AVL_xcg_' num2str(CGrange(i)) '_a' num2str(Alpha(j)) '_b' num2str(Beta(k)) '.fn'];
         filenames.fs = ['AVL_xcg_' num2str(CGrange(i)) '_a' num2str(Alpha(j)) '_b' num2str(Beta(k)) '.fs'];
         filenames.mode = ['AVL_xcg_' num2str(CGrange(i)) '_a' num2str(Alpha(j)) '_b' num2str(Beta(k)) '.ss'];
         
-    
-
         basename = strcat('newruntrial_cg',num2str(i),'a',num2str(j),'b',num2str(k));
+        fID = fopen(fileName, 'r');
+        x = textscan(fID, '%s');
+        s = 1;
+        for temp = 1:100
+            if strcmp(x{1,1}{temp,1}, 'CXtot') == 1 && s == 1
+                CX_basename = x{1,1}{temp+2,1};
+                CY_basename = x{1,1}{temp+2+9,1};
+                CZ_basename = x{1,1}{temp+2+15,1};
+        
+                Cl_basename = x{1,1}{temp+2+3,1};       
+                Cm_basename = x{1,1}{temp+2+12,1};
+                Cn_basename = x{1,1}{temp+2+18,1};
+        
+                CL_basename = x{1,1}{temp+2+24,1};
+                CD_basename = x{1,1}{temp+2+27,1};
+        
+                s = 0;
+            end
+    
+        end
         fid = fopen(strcat(basename,'.run'), 'w');
 
         fprintf(fid, 'LOAD %s\n',files.geo);        % Load the AVL definition of the aircraft
