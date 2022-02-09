@@ -10,51 +10,44 @@ x7 = X(7); %phi
 x8 = X(8); %theta 
 x9 = X(9); %psi
 
-u1 = U(1);
-u2 = U(2);
-u3 = U(3);
-u4 = U(4);
-u5 = U(5);
+u1 = U(1); %aileron
+u2 = U(2); %elevator
+u3 = U(3); %rudder
+u4 = U(4); %throttle 1
+u5 = U(5); %throttle 2
 
 % PARAMETERS
 % all in SI units
-m = 120000; % total mass
+m = 64636.912725; % total mass
 
-cbar = 6.6;     % mean aerodynamic chord
-lt = 24.8;      % distance of AC of tail and body
-S = 260;        % wing platform area
-St = 64;        % tail platform area
+cbar = 3.415284;     % mean aerodynamic chord
+lt = 14.84376;      % distance of AC of tail and body
+S = 91.045;        % wing platform area
+St = 34.6393;     % tail platform area
 
-Xcg = 0.23*cbar;        % x position of CoG in FM
+Xcg = 0.25*cbar;        % x position of CoG in FM
 Ycg = 0;                % y position of CoG in FM
-Zcg = 0.10*cbar;        % z position of CoG in FM
+Zcg = 0;                % z position of CoG in FM
+rcg_b = [Xcg; Ycg; Zcg];
 
 Xac = 0.12*cbar;        % x position of AC in FM
 Yac = 0;                % y position of AC in FM
 Zac = 0;                % z position of AC in FM
+rac_b = [Xac; Yac; Zac];
 
 % Engine constants [position of engines]
 Xapt1 = 0;
-Yapt1 = -7.94;
-Zapt1 = -1.9;
+Yapt1 = -4.8838;
+Zapt1 = -0.9;
 
 Xapt2 = 0;
-Yapt2 = 7.94;
-Zapt2 = -1.9;
+Yapt2 = 4.8838;
+Zapt2 = -0.9;
 
 % Other constants
 g = 9.81;       %acc due to gravity
-despda = 0.25;  %change in downwash wrt alpha
-alpha_L0 = -11.5*pi/180;        %zero lift AoA
-n = 5.5;                        %slope of linear part of Cl vs AoA
-a3 = -768.5;                    %coeff of a^3   
-a2 = 609.2;                     %coeff of a^2 
-a1 = -155.2;                    %coeff of a^1  
-a0 = 15.212;                    %coeff of a^0
-alpha_switch = 14.5*pi/180;     %alpha when lift goes from linear to non linear
 
-
-
+%SATURATION LIMITS 
 % if u1>u1max
 %     u1 = u1max;
 % elseif u1<u1min
@@ -86,6 +79,8 @@ alpha_switch = 14.5*pi/180;     %alpha when lift goes from linear to non linear
 % elseif u5<u5min
 %         u5 = u5min;
 % end
+
+
 % intermediate variables
 % airspeed calc
 Va = sqrt(x1^2 + x2^2 + x3^2);
@@ -103,25 +98,14 @@ wbe_b = [x4; x5; x6];
 V_b = [x1;x2;x3];
 
 % aerodynamic force coeff
-if alpha < alpha_switch
-    CL_wb = n*(alpha - alpha_L0);
-else
-    CL_wb = a3*alpha^3 + a2*alpha^2 + a1*alpha + a0;
-end
-
-% calc CL_t 
-epsilon = despda*(alpha - alpha_L0);
-alpha_t = alpha - epsilon + u2 + 1.35*x5*lt/Va;
-CL_t = 3.1*(St/S)*alpha_t;
-
 %total lift 
-CL = CL_wb + CL_t;
+CL = get_CLf(Alpha, Elev, CL, alpha, u2);
 
-% total drag force neglecting tail 
-CD = 0.13+0.07*(5.5*alpha + 0.654)^2;
+% total drag force
+CL = get_CD(Alpha, Elev, CD, alpha, u2);
 
 % side force calc
-CY = -1.6*beta + 0.24*u3;
+CY = get_CY(Beta, Rudder, Aileron, CY, beta, u3, u1);
 
 % actual dimensional forces in stability axis
 FA_s = [-CD*Q*S; CY*Q*S; -CL*Q*S];
@@ -131,18 +115,12 @@ C_bs = [cos(alpha) 0 -sin(alpha); 0 1 0; sin(alpha) 0 cos(alpha)];
 FA_b = C_bs*FA_s;
 
 % aero moment about AC
-% calc moments in Fb 
-eta11 = 1.4*beta;
-eta21 = -0.59 - (3.1*(St*lt)/(S*cbar))*(alpha - epsilon);
-eta31 = (1 - alpha*(180/(15*pi)))*beta;
-
-eta = [eta11; eta21; eta31];
-dCMdx = (cbar/Va)*[-11 0 5; 0 (-4.03*(St*lt^2)/(S*cbar^2)) 0; 1.7 0 -11.5];
-
-dCMdu = [-0.6 0 0.22; 0 (3.1*(St*lt)/(S*cbar)) 0; 0 0 -0.63];
+Cl = get_Cl(Beta, Rudder, Aileron, Cl, beta, u3, u1);
+Cm = get_Cm(Alpha, Elev, CD, alpha, u2);
+Cn = get_Cn(Beta, Rudder, Aileron, Cl, beta, u3, u1);
 
 % CM = [Cl; Cm; Cn]
-CMac_b = eta + dCMdx*wbe_b + dCMdu*[u1; u2; u3];
+CMac_b = [Cl; Cm; Cn]
 
 % aero moment about ac normalized to an aerodynamic moment
 
@@ -181,9 +159,8 @@ Fg_b = m*g_b;
 % state derivatives
 % inertia matrix
 
-Ib = m*[40.07 0 -2.0923; 0 64 0; -2.0923 0 99.92];
-invIb = 1/m*[0.0249836 0 0.000523151; 0 0.015625 0; 0.000523151 0 0.010019];
-
+Ib = [0.7067E+06 -0.000 0.2699E+05; -0.000; -0.000 0.2708E+07 -0.000; 0.2699E+05 -0.000; 0.3308E+07];
+invIb = 1.0e-05*[0.1415 0 -0.0012; 0 0.0369 0; -0.0012 0 0.0302];
 % calc u, v, w rates
 F_b = Fg_b + FE_b + FA_b;
 x1to3dot = (1/m)*F_b - cross(wbe_b, V_b);
