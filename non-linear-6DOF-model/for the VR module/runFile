@@ -1,0 +1,14 @@
+% Run this file only
+% deriving the flight coefficients
+run(RunFirstLateralModel);
+save('LateralModelData');
+
+run(RunFirstLongitudinalModel);
+save('LongitudinalModelData');
+
+% make changes in the init file and the nonLin6DOFmodel.m function
+run(RunSecond_initCode);
+
+% connect joystick and select proper com port and then start simulation
+sim('non_lin_6_DOF', Inf); 
+% give inputs through joystick 

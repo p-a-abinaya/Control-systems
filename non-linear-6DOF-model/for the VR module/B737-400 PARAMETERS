@@ -1,0 +1,13 @@
+B737-400 PARAMETERS
+
+	PARAMETERS	     |	imperial system			|	in SI units 	
+max take off weight 		= 142,500 lb 			= 64636.912725 kg
+wing span            		= 94 ft 9 in 			= 28.8798 m
+Wing Reference Area  		= 980 ft2	  			= 91.045 m2
+Wing MAC			 		= 11 ft 2.46 in 		= 3.415284 m 
+elevator 					= [-25, 25] deg			= [-25, 25]*pi/180
+aileron 					= [-25, 25] deg			= [-25, 25]*pi/180
+rudder 						= [-25, 25] deg			= [-25, 25]*pi/180
+throttle 1 and 2 			= [-5, 75] deg			= [-5, 75]*pi/180
+lt 													= 14.84376
+tail platform area 									= 34.6393 m2
