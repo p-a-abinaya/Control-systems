@@ -1,4 +1,5 @@
 function [XDOT] = NonLin6DOFModel (X,U)
+load('workspacedat.mat');
 % ------------------- STATE AND CONTROL VECTORS ---------------------------
 x1 = X(1); % u
 x2 = X(2); % v
