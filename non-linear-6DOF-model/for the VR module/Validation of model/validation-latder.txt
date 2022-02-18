@@ -1,0 +1,70 @@
+ ---------------------------------------------------------------
+ Vortex Lattice Output -- Total Forces
+
+ Configuration: 737-800 raised tail                                         
+     # Surfaces =  11
+     # Strips   = 137
+     # Vortices =1505
+
+  Sref =  1260.0       Cref =  11.000       Bref =  113.00    
+  Xref =  65.269       Yref =  0.0000       Zref =  1.1656    
+
+ Standard axis orientation,  X fwd, Z down         
+
+ Run case: -unnamed-                               
+
+  Alpha =   2.96891     pb/2V =  -0.00000     p'b/2V =  -0.00000
+  Beta  =   6.00000     qc/2V =   0.00000
+  Mach  =     0.029     rb/2V =  -0.00000     r'b/2V =  -0.00000
+
+  CXtot =   0.01250     Cltot =  -0.04206     Cl'tot =  -0.03645
+  CYtot =  -0.31555     Cmtot =   0.00000
+  CZtot =  -0.54452     Cntot =   0.10715     Cn'tot =   0.10918
+
+  CLtot =   0.54444
+  CDtot =   0.01572
+  CDvis =   0.00000     CDind = 0.0157245
+  CLff  =   0.54965     CDff  = 0.0402548    | Trefftz
+  CYff  =  -0.31542         e =    0.3134    | Plane  
+
+   slat            =   0.00000
+   flap            =   0.00000
+   aileron         =   2.00000
+   elevator        =   0.51036
+   rudder          =  25.00000
+
+ ---------------------------------------------------------------
+
+ Stability-axis derivatives...
+
+                             alpha                beta
+                  ----------------    ----------------
+ z' force CL |    CLa =   6.014402    CLb =  -0.040201
+ y  force CY |    CYa =   0.064016    CYb =  -1.137498
+ x' mom.  Cl'|    Cla =   0.044411    Clb =  -0.236316
+ y  mom.  Cm |    Cma =  -1.474285    Cmb =  -0.656232
+ z' mom.  Cn'|    Cna =   0.003083    Cnb =   0.173836
+
+                     roll rate  p'      pitch rate  q'        yaw rate  r'
+                  ----------------    ----------------    ----------------
+ z' force CL |    CLp =   0.064994    CLq =  18.811644    CLr =  -0.002528
+ y  force CY |    CYp =   0.105993    CYq =   1.703790    CYr =   0.922113
+ x' mom.  Cl'|    Clp =  -0.475715    Clq =   0.267178    Clr =   0.202444
+ y  mom.  Cm |    Cmp =  -0.048200    Cmq = -72.769501    Cmr =   0.297938
+ z' mom.  Cn'|    Cnp =  -0.034497    Cnq =  -0.653183    Cnr =  -0.433673
+
+                  slat         d1     flap         d2     aileron      d3     elevator     d4     rudder       d5 
+                  ----------------    ----------------    ----------------    ----------------    ----------------
+ z' force CL |   CLd1 =  -0.001064   CLd2 =   0.028411   CLd3 =  -0.000352   CLd4 =   0.012384   CLd5 =  -0.000272
+ y  force CY |   CYd1 =  -0.000055   CYd2 =  -0.000010   CYd3 =   0.000141   CYd4 =   0.000024   CYd5 =  -0.007621
+ x' mom.  Cl'|   Cld1 =   0.000037   Cld2 =  -0.000539   Cld3 =   0.002216   Cld4 =  -0.000059   Cld5 =  -0.000812
+ y  mom.  Cm |   Cmd1 =  -0.000754   Cmd2 =   0.018681   Cmd3 =   0.000165   Cmd4 =  -0.057797   Cmd5 =   0.001433
+ z' mom.  Cn'|   Cnd1 =   0.000031   Cnd2 =  -0.000048   Cnd3 =   0.000151   Cnd4 =   0.000004   Cnd5 =   0.003506
+ Trefftz drag| CDffd1 =  -0.000024 CDffd2 =   0.001178 CDffd3 =  -0.000003 CDffd4 =   0.000524 CDffd5 =   0.001529
+ span eff.   |    ed1 =  -0.000659    ed2 =   0.015417    ed3 =  -0.000275    ed4 =   0.006589    ed5 =  -0.008188
+
+
+
+ Neutral point  Xnp =  67.964981
+
+ Clb Cnr / Clr Cnb  =   2.912139    (  > 1 if spirally stable )
